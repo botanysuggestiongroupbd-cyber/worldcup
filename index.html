@@ -3,104 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TSports HD - লাইভ</title>
+    <title>আমার প্রিমিয়াম টিভি - PTV Sports</title>
+    <!-- Plyr CSS (ভিডিও প্লেয়ার স্টাইলিশ করার জন্য) -->
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <style>
-        body {
-            margin: 0;
-            background: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            flex-direction: column;
-            font-family: Arial, sans-serif;
+        * { box-sizing: border-box; }
+        body { 
+            background-color: #0b0b0b; 
+            color: white; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 0; 
         }
-        #videoContainer {
-            width: 100%;
-            max-width: 960px;
-            aspect-ratio: 16 / 9;
-            background: #111;
+        .header { 
+            background: #c62828; 
+            padding: 15px; 
+            font-size: 22px; 
+            font-weight: bold; 
+            letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .player-container { 
+            max-width: 900px; 
+            margin: 30px auto; 
+            background: #000; 
+            border: 2px solid #222; 
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.7);
         }
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
+        .channel-section { 
+            margin: 20px auto;
+            max-width: 900px;
+            padding: 0 15px;
         }
-        .info {
-            color: #ccc;
-            margin-top: 12px;
-            font-size: 14px;
-            text-align: center;
+        .btn { 
+            background: #1e1e1e; 
+            color: #ffd54a; 
+            border: 1px solid #333; 
+            padding: 12px 25px; 
+            font-size: 16px; 
+            font-weight: bold;
+            cursor: pointer; 
+            border-radius: 5px; 
+            transition: all 0.3s ease;
         }
-        .status {
-            margin-top: 6px;
-            color: #f00;
+        .btn:hover { 
+            background: #c62828; 
+            color: #fff;
+            border-color: #c62828;
+        }
+        .notice {
+            color: #aaa;
             font-size: 13px;
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
-    <div id="videoContainer">
-        <video id="video" controls autoplay playsinline></video>
+
+    <!-- হেডার -->
+    <div class="header">RAKIB TV PREMIUM (CUSTOM) 🔴 LIVE</div>
+
+    <!-- ভিডিও প্লেয়ার বক্স -->
+    <div class="player-container">
+        <video id="player" controls crossorigin playsinline></video>
     </div>
-    <div class="info">TSports HD - সরাসরি</div>
-    <div class="status" id="status">সংযোগ করা হচ্ছে...</div>
 
-    <!-- hls.js CDN -->
-    <script src="https://tvsen7.aynaott.com/tsports-hd/index.m3u8?e=1781150447&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=2a95e0ee7b8d1f0ce7f41655180a06b4"></script>
+    <!-- চ্যানেল কন্ট্রোল -->
+    <div class="channel-section">
+        <button class="btn" onclick="playChannel('https://tvsen5.aynaott.com/PtvSports/index.m3u8?e=1779283784&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=db1789e36c278bf538489fac263e0ffb')">
+            🟢 PTV SPORTS LIVE
+        </button>
+
+        <p class="notice">* যদি প্লে হতে সমস্যা হয়, তবে বাটনে আরেকবার ক্লিক করুন অথবা Via Browser ব্যবহার করুন।</p>
+    </div>
+
+    <!-- HLS লাইব্রেরি এবং Plyr Script (লাইভ স্ট্রিম চালু রাখার মেইন ইঞ্জিন) -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     <script>
-        const video = document.getElementById('video');
-        const statusEl = document.getElementById('status');
-        const streamUrl = "http://198.195.239.50:8095/Tsports/index.m3u8";
+        const video = document.getElementById('player');
+        // প্লেয়ার কনফিগারেশন
+        const player = new Plyr(video, {
+            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+            tooltips: { controls: true, seek: true }
+        });
 
-        function playStream() {
+        function playChannel(streamUrl) {
             if (Hls.isSupported()) {
                 const hls = new Hls();
                 hls.loadSource(streamUrl);
                 hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    video.play();
-                    statusEl.textContent = "লাইভ চালু আছে";
-                    statusEl.style.color = "#0f0";
-                });
-                hls.on(Hls.Events.ERROR, (event, data) => {
-                    if (data.fatal) {
-                        switch (data.type) {
-                            case Hls.ErrorTypes.NETWORK_ERROR:
-                                statusEl.textContent = "নেটওয়ার্ক সমস্যা অথবা সার্ভার ডাউন।";
-                                break;
-                            case Hls.ErrorTypes.MEDIA_ERROR:
-                                statusEl.textContent = "মিডিয়া লোড করা যায়নি, চ্যানেল বন্ধ থাকতে পারে।";
-                                break;
-                            default:
-                                statusEl.textContent = "স্ট্রিম চালু করা সম্ভব হয়নি। লিংক মেয়াদোত্তীর্ণ।";
-                                break;
-                        }
-                        statusEl.style.color = "#f00";
-                    }
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    video.play().catch(function(error) {
+                        console.log("Autoplay blocked, waiting for user interaction");
+                    });
                 });
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                // Safari native HLS
+                // আইফোন বা সাফারি ব্রাউজারের জন্য সরাসরি সাপোর্ট
                 video.src = streamUrl;
-                video.addEventListener('loadedmetadata', () => {
+                video.addEventListener('loadedmetadata', function() {
                     video.play();
-                    statusEl.textContent = "লাইভ চালু আছে (Safari)";
-                    statusEl.style.color = "#0f0";
                 });
-                video.addEventListener('error', () => {
-                    statusEl.textContent = "স্ট্রিম লোড করতে ব্যর্থ। লিংক অকার্যকর।";
-                    statusEl.style.color = "#f00";
-                });
-            } else {
-                statusEl.textContent = "আপনার ব্রাউজার HLS সাপোর্ট করে না।";
-                statusEl.style.color = "#f00";
             }
         }
 
-        playStream();
+        // পেজ লোড হওয়া মাত্রই আপনার দেওয়া PTV Sports লিঙ্কটি অটোমেটিক চালু হবে
+        window.addEventListener('DOMContentLoaded', () => {
+            playChannel('https://tvsen5.aynaott.com/PtvSports/index.m3u8?e=1779283784&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=db1789e36c278bf538489fac263e0ffb');
+        });
     </script>
 </body>
 </html>
