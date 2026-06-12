@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>আমার প্রিমিয়াম টিভি - PTV Sports</title>
+    <title>Botany Suggestion Group Bangladesh FiFa world cup ip Tv by Tareq</title>
     <!-- Plyr CSS (ভিডিও প্লেয়ার স্টাইলিশ করার জন্য) -->
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <style>
@@ -18,9 +18,10 @@
         .header { 
             background: #c62828; 
             padding: 15px; 
-            font-size: 22px; 
+            font-size: 18px; 
             font-weight: bold; 
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
+            text-align: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
         .player-container { 
@@ -36,20 +37,27 @@
             margin: 20px auto;
             max-width: 900px;
             padding: 0 15px;
+            text-align: center;
         }
         .btn { 
             background: #1e1e1e; 
             color: #ffd54a; 
             border: 1px solid #333; 
-            padding: 12px 25px; 
-            font-size: 16px; 
+            padding: 12px 20px; 
+            font-size: 15px; 
             font-weight: bold;
             cursor: pointer; 
             border-radius: 5px; 
+            margin: 5px;
             transition: all 0.3s ease;
         }
         .btn:hover { 
             background: #c62828; 
+            color: #fff;
+            border-color: #c62828;
+        }
+        .active-btn {
+            background: #c62828;
             color: #fff;
             border-color: #c62828;
         }
@@ -62,46 +70,63 @@
 </head>
 <body>
 
-    <!-- হেডার -->
-    <div class="header">RAKIB TV PREMIUM (CUSTOM) 🔴 LIVE</div>
+    <!-- হেডার (আপনার নাম ও গ্রুপ সহ) -->
+    <div class="header">Botany Suggestion Group Bangladesh FiFa world cup ip Tv by Tareq 🔴 LIVE</div>
 
     <!-- ভিডিও প্লেয়ার বক্স -->
     <div class="player-container">
         <video id="player" controls crossorigin playsinline></video>
     </div>
 
-    <!-- চ্যানেল কন্ট্রোল -->
+    <!-- চ্যানেল লিস্ট ও কন্ট্রোল বোতাম -->
     <div class="channel-section">
-        <button class="btn" onclick="playChannel('https://tvsen5.aynaott.com/PtvSports/index.m3u8?e=1779283784&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=db1789e36c278bf538489fac263e0ffb')">
-            🟢 PTV SPORTS LIVE
+        <button id="btn-fifa" class="btn" onclick="playChannel('https://a62dad94.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0ZJRkFQbHVzRW5nbGlzaF9ITFM/playlist.m3u8', 'btn-fifa')">
+            ⚽ FIFA WORLD CUP LIVE
         </button>
-
-        <p class="notice">* যদি প্লে হতে সমস্যা হয়, তবে বাটনে আরেকবার ক্লিক করুন অথবা Via Browser ব্যবহার করুন।</p>
+        
+        <button id="btn-ptv" class="btn" onclick="playChannel('https://tvsen5.aynaott.com/PtvSports/index.m3u8?e=1779283784&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=db1789e36c278bf538489fac263e0ffb', 'btn-ptv')">
+            🏏 PTV SPORTS LIVE
+        </button>
+        
+        <p class="notice">* যে চ্যানেলটি দেখতে চান তার ওপর ক্লিক করুন। লোড হতে সমস্যা হলে পেজটি রিফ্রেশ (Refresh) করুন।</p>
     </div>
 
-    <!-- HLS লাইব্রেরি এবং Plyr Script (লাইভ স্ট্রিম চালু রাখার মেইন ইঞ্জিন) -->
+    <!-- HLS লাইব্রেরি এবং Plyr Script -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     <script>
         const video = document.getElementById('player');
+        let hls = null;
+
         // প্লেয়ার কনফিগারেশন
         const player = new Plyr(video, {
             controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
             tooltips: { controls: true, seek: true }
         });
 
-        function playChannel(streamUrl) {
+        function playChannel(streamUrl, btnId) {
+            // আগের কোনো স্ট্রিম চালু থাকলে তা বন্ধ করার জন্য
+            if (hls) {
+                hls.destroy();
+            }
+
+            // বোতামের কালার হাইলাইট পরিবর্তন করার জন্য
+            document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active-btn'));
+            if(btnId) {
+                document.getElementById(btnId).classList.add('active-btn');
+            }
+
             if (Hls.isSupported()) {
-                const hls = new Hls();
+                hls = new Hls();
                 hls.loadSource(streamUrl);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, function() {
                     video.play().catch(function(error) {
-                        console.log("Autoplay blocked, waiting for user interaction");
+                        console.log("Autoplay blocked, waiting for user action");
                     });
                 });
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                // আইফোন বা সাফারি ব্রাউজারের জন্য সরাসরি সাপোর্ট
+                // আইফোন বা সাফারি ব্রাউজারের জন্য
                 video.src = streamUrl;
                 video.addEventListener('loadedmetadata', function() {
                     video.play();
@@ -109,9 +134,9 @@
             }
         }
 
-        // পেজ লোড হওয়া মাত্রই আপনার দেওয়া PTV Sports লিঙ্কটি অটোমেটিক চালু হবে
+        // পেজ লোড হওয়া মাত্রই অটোমেটিক প্রথমে ফিফা ওয়ার্ল্ড কাপ চ্যানেলটি চালু হবে
         window.addEventListener('DOMContentLoaded', () => {
-            playChannel('https://tvsen5.aynaott.com/PtvSports/index.m3u8?e=1779283784&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=db1789e36c278bf538489fac263e0ffb');
+            playChannel('https://a62dad94.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0ZJRkFQbHVzRW5nbGlzaF9ITFM/playlist.m3u8', 'btn-fifa');
         });
     </script>
 </body>
